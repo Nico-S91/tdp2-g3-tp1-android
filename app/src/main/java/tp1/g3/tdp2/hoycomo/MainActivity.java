@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //API de Graph
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "ïd,email,birthday,friends");
+                parameters.putString("fields", "id,email,birthday,friends");
                 request.setParameters(parameters);
                 request.executeAsync();
 
