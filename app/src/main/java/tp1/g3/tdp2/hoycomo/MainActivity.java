@@ -34,9 +34,6 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
-    TextView txtEmail, txtBithday, txtFriends;
-    ProgressDialog mDialog;
-    ImageView imgAvatar;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -49,13 +46,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //chequeo si ya esta logueado con facebook
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null){
+            //lo redirijo a la pantalla home
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+        }
+
         callbackManager = CallbackManager.Factory.create();
-
-        txtBithday = (TextView) findViewById(R.id.txtBirthday);
-        txtEmail = (TextView) findViewById(R.id.txtEmail);
-        txtFriends = (TextView) findViewById(R.id.txtFriends);
-
-        imgAvatar = (ImageView) findViewById(R.id.avatar);
 
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile", "email", "user_birthday", "user_friends"));
@@ -63,29 +61,11 @@ public class MainActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                mDialog = new ProgressDialog(MainActivity.this);
-                mDialog.setMessage("Retrieving data...");
-                mDialog.show();
 
-                String accessToken = loginResult.getAccessToken().getToken();
+                //Inicio una nueva actividad en android, dirigiendome al Home de la App
+                startActivity(new Intent(MainActivity.this, HomeActivity.class));
 
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        mDialog.dismiss();
-                        Log.d("response", response.toString());
-                        getData(object);
-                    }
-                });
-
-                //API de Graph
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,email,birthday,friends");
-                request.setParameters(parameters);
-                request.executeAsync();
-
-                //TODO: Testear en un celular real!
-
+                //String accessToken = loginResult.getAccessToken().getToken();
             }
 
             @Override
@@ -100,42 +80,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         if(AccessToken.getCurrentAccessToken() != null){
-            txtEmail.setText(AccessToken.getCurrentAccessToken().getUserId());
+            //txtEmail.setText(AccessToken.getCurrentAccessToken().getUserId());
         }
 
     }
 
-    private void getData(JSONObject object) {
-        try {
-            URL profile_picture = new URL("https://graph.facebook.com/" + object.getString("id")+"/picture?width=250&height=250");
-            Picasso.with(this).load(profile_picture.toString()).into(imgAvatar);
 
-            txtEmail.setText(object.getString("email"));
-            txtBithday.setText(object.getString("birthday"));
-            txtFriends.setText("Friends: " + object.getJSONObject("friends").getJSONObject("summary").getString("total_count"));
-
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void printKeyHash(){
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo("tp1.g3.tdp2.hoycomo", PackageManager.GET_SIGNATURES);
-
-            for (Signature signature:info.signatures){
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
 
 }
