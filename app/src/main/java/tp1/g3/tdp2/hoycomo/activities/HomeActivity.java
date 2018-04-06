@@ -1,6 +1,7 @@
 package tp1.g3.tdp2.hoycomo.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,7 +29,12 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import com.loopj.android.http.*;
+import org.json.*;
+
+import cz.msebera.android.httpclient.Header;
 import tp1.g3.tdp2.hoycomo.R;
+import tp1.g3.tdp2.hoycomo.helpers.AppServerClient;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -90,6 +96,26 @@ public class HomeActivity extends AppCompatActivity
                 mDialog.dismiss();
                 Log.d("response", response.toString());
                 getData(object);
+
+                //Voy a ver si el usuario es nuevo o ya existe
+                try {
+                    //creo el parametro de consulta
+                    RequestParams params = new RequestParams();
+                    params.put("fb_id", object.getString("id"));
+
+                    AppServerClient.get("user/exist", params, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            //capturo la respuesta Json recibida
+                            if(statusCode == 204) {
+                                //El usuario no existe, debo mandarlo hacia la pantalla de Registro de usuarios.
+                                //TODO: debo  llamar a un fragment que tenga la pantalla de alta de usuario.
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
