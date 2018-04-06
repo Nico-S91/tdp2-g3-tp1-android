@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+repositories{
+    mavenCentral()
+}
+
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -31,6 +35,9 @@ dependencies {
 
     //dependencia del sdk de facebook
     implementation 'com.facebook.android:facebook-login:[4,5)'
+
+    //dependencia para llamadas de http
+    implementation 'com.loopj.android:android-async-http:1.4.9'
 
     implementation 'com.android.support:design:26.1.0'
     testImplementation 'junit:junit:4.12'

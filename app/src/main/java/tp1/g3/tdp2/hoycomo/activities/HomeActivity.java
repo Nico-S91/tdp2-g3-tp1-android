@@ -1,11 +1,10 @@
-package tp1.g3.tdp2.hoycomo;
+package tp1.g3.tdp2.hoycomo.activities;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -28,6 +27,8 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import tp1.g3.tdp2.hoycomo.R;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
