@@ -19,12 +19,12 @@ public class GetComerciosTask extends AsyncTask<Integer, String, TaskResponse<Co
     private static final String TAG = GetComerciosTask.class.getName();
     public static final int FAIL_CODE = 999;
     private String srvUrl;
-    //private Runnable onPreExecute = () -> {};
+    private Runnable onPreExecute;
     private Procedure<TaskResponse<ComerciosListadoResponse>> postExecute;
 
     public GetComerciosTask(String srvUrl, Runnable onPreExecute, Procedure<TaskResponse<ComerciosListadoResponse>> postExecute) {
         this.srvUrl = srvUrl;
-        //this.onPreExecute = onPreExecute;
+        this.onPreExecute = onPreExecute;
         this.postExecute = postExecute;
     }
 
@@ -55,7 +55,7 @@ public class GetComerciosTask extends AsyncTask<Integer, String, TaskResponse<Co
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        //onPreExecute.run();
+        onPreExecute.run();
     }
 
 

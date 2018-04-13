@@ -1,154 +1,138 @@
 package tp1.g3.tdp2.hoycomo.Activdades;
 
-import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.app.Activity;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+import tp1.g3.tdp2.hoycomo.Adapter.ComercioAdapter;
+import tp1.g3.tdp2.hoycomo.Dominio.ComercioList;
+import tp1.g3.tdp2.hoycomo.Helpers.MyData;
+import tp1.g3.tdp2.hoycomo.Helpers.ToastMessage;
 import tp1.g3.tdp2.hoycomo.Modelos.Comercio;
 import tp1.g3.tdp2.hoycomo.R;
+import tp1.g3.tdp2.hoycomo.Server.ApiRestConsumer;
+import tp1.g3.tdp2.hoycomo.Tasks.GetComercios2Task;
 import tp1.g3.tdp2.hoycomo.Tasks.GetComerciosTask;
 
-public class ComerciosListado extends Activity {
-    private static final String TAG = ComerciosListado.class.getName();
-    public static final int RESULT_FAIL = -999;
-    private static final int INTERNET_PERMISSION_REQ_CODE = 100;
-    private static List<Comercio> comercios;
-    private static int page = 1;
-    private ArrayAdapter<Comercio> adapter;
-    private String srvUrl;
-    private static AtomicBoolean ComerciosCargado = new AtomicBoolean(false);
-    private View progressLayout;
-    private AtomicBoolean bottomReached = new AtomicBoolean(false);
+public class ComerciosListado extends AppCompatActivity {
+
+    private ProgressDialog progressDialog;
+
+    private MyData pref;
+    private ListView listView;
+    private EditText iSearch;
+    private ComercioList comercios;
+    private ComercioAdapter adapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_comercios_listado);
+        setContentView(R.layout.activity_comercios_list);
 
-        srvUrl = getString(R.string.srv_base_url);
-        progressLayout = findViewById(R.id.main_progress_layout);
-        hideProgress();
-        checkPermissions();
-    }
+        pref = new MyData(this);
 
-    private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
-            run();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION_REQ_CODE);
+        listView = findViewById(R.id.lstComercios);
+        listView.setTextFilterEnabled(true);
+        iSearch = findViewById(R.id.inputSearch);
+
+        progressDialog = new ProgressDialog(ComerciosListado.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Cargando comercios...");
+        progressDialog.show();
+
+        if (ApiRestConsumer.isOnline(this)) {
+            new GetComercios2Task(ComerciosListado.this).execute(getString(R.string.url_Comercios));
         }
-    }
 
-    private void hideProgress () {
-        progressLayout.setVisibility(View.GONE);
-    }
+        /* Activando el filtro de busqueda */
+        iSearch.addTextChangedListener(new TextWatcher() {
 
-    private void showProgress () {
-        progressLayout.setVisibility(View.VISIBLE);
-    }
-    private void run() {
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>());
-        setListAdapter(adapter);
-        getListView().setOnScrollListener(this);
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                // TODO Auto-generated method stub
 
-        if (ComerciosCargado.get()) {
-            adapter.addAll(comercios);
-        } else {
-            new GetComerciosTask(
-                    srvUrl,
-                    this::showProgress,
-                    response -> {
-                        if (response.success) {
-                            comercios = new ArrayList<>(response.data);
-                            ComerciosCargado.set(comercios.size() > 0);
-                            adapter.addAll(comercios);
-                        } else {
-                            Toast.makeText(this, R.string.srv_conn_err, Toast.LENGTH_SHORT).show();
-                            finishFail();
-                        }
-                        hideProgress();
-                    }).execute(++page);
-        }
-    }
-    private void finishWithResult(Comercio comercio) {
-        Bundle conData = new Bundle();
-        conData.putSerializable(Comercio, comercio);
-        Intent intent = new Intent();
-
-        intent.putExtras(conData);
-        setResult(RESULT_OK, intent);
-
-        finish();
-    }
-
-    private void finishFail() {
-        Intent intent = new Intent();
-        setResult(RESULT_FAIL, intent);
-        finish();
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-    }
-
-    @Override
-    public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        // SI hay pocos items, hacer nada
-        if (visibleItemCount == totalItemCount) return;
-
-        Log.d(TAG, "listView.getChildCount(): " + listView.getChildCount());
-
-        int itemDiff = Math.abs(firstVisibleItem + visibleItemCount - totalItemCount);
-        Log.d(TAG, "itemDiff: " + itemDiff);
-        if (itemDiff <= 1) {
-            Log.d(TAG, "BOTTOM REACHED!");
-            if (bottomReached.compareAndSet(false, true)) {
-                onBottomScrollReached();
+                adapter.getFilter().filter(arg0.toString());
+                Log.i("Busqueda", ""+arg0);
             }
-        }
-        Log.d(TAG, "firstVisibleItem: " + firstVisibleItem + ", visibleItemCount: " + visibleItemCount + ", totalItemCount: " + totalItemCount);
-    }
-    private void onBottomScrollReached() {
-        try {
-            new GetComerciosTask(
-                    srvUrl,
-                    this.showProgress(),
-                    response -> {
-                        try {
-                            if (response.success) {
-                                if (response.data == null || response.data.isEmpty()) {
-                                    Toast.makeText(this, getString(R.string.no_info), Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
 
-                                comercios.addAll(response.data);
-                                adapter.addAll(response.data);
-                                Log.d(TAG, "MORE CITIES LOADED!");
-                            } else {
-                                Toast.makeText(this, getString(R.string.srv_conn_err), Toast.LENGTH_SHORT).show();
-                            }
-                            bottomReached.set(false);
-                        } finally {
-                            hideProgress();
-                        }
-                    }).execute(++page);
-        } catch (Exception e) {
-            Log.e(TAG, getString(R.string.comercio_get_error), e);
-            bottomReached.set(false);
-            hideProgress();
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                                          int arg3) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+    }
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        Intent intent;
+        switch (item.getItemId()){
+            case R.id.nav_profile:
+                intent = new Intent(AlbumsList.this, Profile.class);
+                startActivity(intent);
+                break;
+            case R.id.nav_tracks:
+                finish();
+                break;
+            case R.id.nav_logout:
+                intent = new Intent(AlbumsList.this, Login.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+*/
+    public void onGetComerciosSuccess(ComercioList comercioList) {
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
+        if (comercioList != null) {
+            comercios = comercioList;
+            adapter = new ComercioAdapter(this, comercios.getComercios());
+            listView.setAdapter(adapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    int itemPosition = position;
+                    Comercio comercio = (Comercio) listView.getAdapter().getItem(position);
+                    ToastMessage.toastMessageCorto(ComerciosListado.this, comercio.getNombre().toString());
+                    /*Intent intent;
+                    intent = new Intent(ComerciosListado.this, MenuList.class);
+                    intent.putExtra("albumId", comercio.getId());
+                    startActivity(intent);*/
+                }
+
+            });
         }
     }
 }
-
