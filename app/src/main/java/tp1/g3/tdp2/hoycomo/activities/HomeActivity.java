@@ -1,6 +1,8 @@
 package tp1.g3.tdp2.hoycomo.activities;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -52,15 +55,6 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-/*        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -95,6 +89,31 @@ public class HomeActivity extends AppCompatActivity
             public void onCompleted(JSONObject object, GraphResponse response) {
                 mDialog.dismiss();
                 Log.d("response", response.toString());
+
+                //chequeo que tenga mas de 5 amigos
+                try {
+                    int friendCount = Integer.parseInt(object.getJSONObject("friends").getJSONObject("summary").getString("total_count"));
+
+                    if(friendCount < 5){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+
+                        builder.setCancelable(false);
+                        builder.setTitle("Error de Autenticación!");
+                        builder.setMessage("La cuenta de facebook debe tener 5 amigos o más");
+
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                LoginManager.getInstance().logOut();
+                            }
+                        });
+
+                        builder.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 getData(object);
 
                 //Voy a ver si el usuario es nuevo o ya existe
@@ -121,7 +140,7 @@ public class HomeActivity extends AppCompatActivity
 
         //API de Graph
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email");
+        parameters.putString("fields", "id,name,email,friends");
         request.setParameters(parameters);
         request.executeAsync();
 
