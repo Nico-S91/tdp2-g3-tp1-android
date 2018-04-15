@@ -5,9 +5,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_buscar_comercios"
-            android:icon="@drawable/ic_search_black"
-            android:title="Comercios" />
+            android:id="@+id/nav_cerrar_sesion"
+            android:icon="@drawable/ic_logout"
+            android:title="Cerrar Sesión" />
     </group>
 
 </menu>

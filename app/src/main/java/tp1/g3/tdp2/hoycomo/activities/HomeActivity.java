@@ -42,6 +42,9 @@ import tp1.g3.tdp2.hoycomo.helpers.AppServerClient;
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private NavigationView myNavigationView;
+
+
     //declaro los textos del nombre y mail de usuario de facebook
     TextView txtEmail, txtName;
     ImageView imgAvatar;
@@ -64,7 +67,7 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
-        //navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(this);
 
         //View header = LayoutInflater.from(this).inflate(R.layout.nav_header_home, null);
 
@@ -104,7 +107,8 @@ public class HomeActivity extends AppCompatActivity
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                LoginManager.getInstance().logOut();
+                            LoginManager.getInstance().logOut();
+                            startActivity(new Intent(HomeActivity.this, MainActivity.class));
                             }
                         });
 
@@ -128,7 +132,7 @@ public class HomeActivity extends AppCompatActivity
                             //capturo la respuesta Json recibida
                             if(statusCode == 204) {
                                 //El usuario no existe, debo mandarlo hacia la pantalla de Registro de usuarios.
-                                //TODO: debo  llamar a un fragment que tenga la pantalla de alta de usuario.
+                                startActivity(new Intent(HomeActivity.this, UserRegisterAddressActivity.class));
                             }
                         }
                     });
@@ -172,7 +176,9 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.nav_cerrar_sesion) {
+            LoginManager.getInstance().logOut();
+            startActivity(new Intent(HomeActivity.this, MainActivity.class));
             return true;
         }
 
@@ -185,8 +191,10 @@ public class HomeActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_buscar_comercios) {
-            // Handler para pegar a la busqueda de comercios
+        if (id == R.id.nav_cerrar_sesion) {
+            LoginManager.getInstance().logOut();
+            startActivity(new Intent(HomeActivity.this, MainActivity.class));
+            return true;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
