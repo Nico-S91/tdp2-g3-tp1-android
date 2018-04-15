@@ -42,6 +42,9 @@ dependencies {
     //dependencia de imagen circular
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
+    //dependencia de spinner
+    implementation 'com.github.ganfra:material-spinner:1.1.1'
+
     implementation 'com.android.support:design:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

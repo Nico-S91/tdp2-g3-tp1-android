@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/default_form_color"
     tools:context="tp1.g3.tdp2.hoycomo.activities.UserRegisterAddressActivity">
 
@@ -32,15 +33,28 @@
             android:layout_marginRight="10dp"
             android:hint="Dirección (ej: garibaldi 123)"/>
 
-        <Spinner
+        <fr.ganfra.materialspinner.MaterialSpinner
             android:id="@+id/ddlCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:ms_arrowColor="@color/colorSecondaryText"
+            app:ms_arrowSize="16dp"
+            app:ms_floatingLabelColor="#A9A9A9"
+            app:ms_floatingLabelText="Localidad">
+
+        </fr.ganfra.materialspinner.MaterialSpinner>
+
+<!--        <Spinner
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:spinnerMode="dropdown"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
-        </Spinner>
+        </Spinner>-->
 
         <Button
             android:id="@+id/btnAddAddress"
