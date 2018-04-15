@@ -3,6 +3,8 @@
     package="tp1.g3.tdp2.hoycomo">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Request to check Internet connection state -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +29,15 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.UserRegisterAddressActivity"></activity>
+        <activity
+            android:name=".Activdades.ComerciosListado"
+            android:label="@string/title_activity_comercios_listado">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

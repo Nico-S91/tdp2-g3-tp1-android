@@ -12,4 +12,15 @@
     <string name="initial_msg">Para comenzar a utilizar la aplicación, logueate con tu cuenta de facebook</string>
     <string name="com_facebook_loginview_log_in_button">Login</string>
     <string name="create_address_msg">Por favor ingrese una dirección</string>
+    <string name="title_activity_comercios_lista">Listado de comercios</string>
+    <string name="large_text">Ejemplo</string>
+    <string name="title_activity_comercios_listado">Listado de comercios</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="no_hay_comercios">No hay comercios abiertos</string>
+    <string name="main_progress_lbl">Loading...</string>
+    <string name="srv_base_url">Direccion</string>
+    <string name="no_info">No hay información</string>
+    <string name="srv_conn_err">Error de conección</string>
+    <string name="comercio_get_error">Error de comercio</string>
+    <string name="url_Comercios">http://www.mocky.io/v2/5aca634b2e00005900bba9c9</string>
 </resources>
