@@ -135,6 +135,23 @@ public class HomeActivity extends AppCompatActivity
                                 startActivity(new Intent(HomeActivity.this, UserRegisterAddressActivity.class));
                             }
                         }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+
+                            builder.setCancelable(false);
+                            builder.setTitle("Error de comunicación con el servidor");
+                            builder.setMessage("No se pudo acceder al servidor para conseguir los datos");
+
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    LoginManager.getInstance().logOut();
+                                    startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                                }
+                            });
+                        }
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
