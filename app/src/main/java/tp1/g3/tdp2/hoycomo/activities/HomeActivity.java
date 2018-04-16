@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -38,7 +39,7 @@ import org.json.*;
 import cz.msebera.android.httpclient.Header;
 import tp1.g3.tdp2.hoycomo.Activdades.ComerciosListado;
 import tp1.g3.tdp2.hoycomo.R;
-import tp1.g3.tdp2.hoycomo.helpers.AppServerClient;
+import tp1.g3.tdp2.hoycomo.Helpers.AppServerClient;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -59,6 +60,9 @@ public class HomeActivity extends AppCompatActivity
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ActionBar actionBarInstance = getSupportActionBar();
+        actionBarInstance.setTitle("HoyComo");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -114,50 +118,50 @@ public class HomeActivity extends AppCompatActivity
                         });
 
                         builder.show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    } else {
+                        getData(object);
 
-                getData(object);
+                        //Voy a ver si el usuario es nuevo o ya existe
+                        try {
+                            //creo el parametro de consulta
+                            String fbId = object.getString("id");
 
-                //Voy a ver si el usuario es nuevo o ya existe
-                try {
-                    //creo el parametro de consulta
-                    String fbId = object.getString("id");
-
-                    AppServerClient.get("api/v1/user/" + fbId, null, new JsonHttpResponseHandler() {
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                            //capturo la respuesta Json recibida
-                            if(statusCode == 204) {
-                                //El usuario no existe, debo mandarlo hacia la pantalla de Registro de usuarios.
-                                startActivity(new Intent(HomeActivity.this, UserRegisterAddressActivity.class));
-                            }
-
-                            if(statusCode == 200) {
-                                startActivity(new Intent(HomeActivity.this, ComerciosListado.class));
-                            }
-
-                        }
-
-                        @Override
-                        public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-
-                            builder.setCancelable(false);
-                            builder.setTitle("Error de comunicación con el servidor");
-                            builder.setMessage("No se pudo acceder al servidor para conseguir los datos");
-
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            AppServerClient.get("api/v1/user/" + fbId, null, new JsonHttpResponseHandler() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    LoginManager.getInstance().logOut();
-                                    startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                                    //capturo la respuesta Json recibida
+                                    if(statusCode == 204) {
+                                        //El usuario no existe, debo mandarlo hacia la pantalla de Registro de usuarios.
+                                        startActivity(new Intent(HomeActivity.this, UserRegisterAddressActivity.class));
+                                    }
+
+                                    if(statusCode == 200) {
+                                        startActivity(new Intent(HomeActivity.this, ComerciosListado.class));
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, String errorResponse, Throwable e) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+
+                                    builder.setCancelable(false);
+                                    builder.setTitle("Error de comunicación con el servidor");
+                                    builder.setMessage("No se pudo acceder al servidor para conseguir los datos");
+
+                                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            LoginManager.getInstance().logOut();
+                                            startActivity(new Intent(HomeActivity.this, MainActivity.class));
+                                        }
+                                    });
                                 }
                             });
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -196,11 +200,6 @@ public class HomeActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if(id == R.id.nav_listado_comercios) {
-            startActivity(new Intent(HomeActivity.this, ComerciosListado.class));
-            return true;
-        }
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_cerrar_sesion) {
             LoginManager.getInstance().logOut();
@@ -216,6 +215,11 @@ public class HomeActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
+        if(id == R.id.nav_listado_comercios) {
+            startActivity(new Intent(HomeActivity.this, ComerciosListado.class));
+            return true;
+        }
 
         if (id == R.id.nav_cerrar_sesion) {
             LoginManager.getInstance().logOut();

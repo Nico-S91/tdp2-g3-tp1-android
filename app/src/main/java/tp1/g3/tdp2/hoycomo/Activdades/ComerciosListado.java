@@ -3,10 +3,12 @@ package tp1.g3.tdp2.hoycomo.Activdades;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -22,6 +24,8 @@ import tp1.g3.tdp2.hoycomo.R;
 import tp1.g3.tdp2.hoycomo.Server.ApiRestConsumer;
 import tp1.g3.tdp2.hoycomo.Tasks.GetComercios2Task;
 import tp1.g3.tdp2.hoycomo.Tasks.GetComerciosTask;
+import tp1.g3.tdp2.hoycomo.activities.HomeActivity;
+import tp1.g3.tdp2.hoycomo.activities.MainActivity;
 
 public class ComerciosListado extends AppCompatActivity {
 
@@ -38,6 +42,11 @@ public class ComerciosListado extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comercios_list);
+
+        ActionBar actionBarInstance = getSupportActionBar();
+        if (actionBarInstance != null){
+            actionBarInstance.setDisplayHomeAsUpEnabled(true);
+        }
 
         pref = new MyData(this);
 
@@ -80,6 +89,17 @@ public class ComerciosListado extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                startActivity(new Intent(ComerciosListado.this, HomeActivity.class));
+                break;
+        }
+        return true;
+    }
+
 /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu){

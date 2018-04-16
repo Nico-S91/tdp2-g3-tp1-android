@@ -37,7 +37,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 import fr.ganfra.materialspinner.MaterialSpinner;
 import tp1.g3.tdp2.hoycomo.Activdades.ComerciosListado;
 import tp1.g3.tdp2.hoycomo.R;
-import tp1.g3.tdp2.hoycomo.helpers.AppServerClient;
+import tp1.g3.tdp2.hoycomo.Helpers.AppServerClient;
 
 public class UserRegisterAddressActivity extends AppCompatActivity {
 
@@ -51,6 +51,7 @@ public class UserRegisterAddressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_register_address);
 
         ActionBar actionBarInstance = getSupportActionBar();
+        actionBarInstance.setTitle("HoyComo");
         if (actionBarInstance != null){
             actionBarInstance.setDisplayHomeAsUpEnabled(true);
         }

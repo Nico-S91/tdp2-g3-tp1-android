@@ -1,4 +1,4 @@
-package tp1.g3.tdp2.hoycomo.helpers;
+package tp1.g3.tdp2.hoycomo.Helpers;
 
 import android.content.Context;
 
