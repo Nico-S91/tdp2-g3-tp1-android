@@ -196,6 +196,11 @@ public class HomeActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if(id == R.id.nav_listado_comercios) {
+            startActivity(new Intent(HomeActivity.this, ComerciosListado.class));
+            return true;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_cerrar_sesion) {
             LoginManager.getInstance().logOut();
