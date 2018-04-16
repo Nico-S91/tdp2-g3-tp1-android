@@ -26,7 +26,7 @@ public class ComercioList {
         ComercioList comercioList = null;
         try {
             comercioList = new ComercioList();
-            JSONArray comerciosArray = json.getJSONArray("comercios");
+            JSONArray comerciosArray = json.getJSONArray("shops");
             for (int i = 0; i < comerciosArray.length(); i++) {
                 comercioList.getComercios().add(Comercio.fromShortJson(comerciosArray.getJSONObject(i)));
             }

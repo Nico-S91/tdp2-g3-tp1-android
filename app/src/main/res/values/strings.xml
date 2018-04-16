@@ -22,5 +22,5 @@
     <string name="no_info">No hay información</string>
     <string name="srv_conn_err">Error de conección</string>
     <string name="comercio_get_error">Error de comercio</string>
-    <string name="url_Comercios">http://www.mocky.io/v2/5aca634b2e00005900bba9c9</string>
+    <string name="url_Comercios">https://thawing-cliffs-51834.herokuapp.com/api/v1/shops/published</string>
 </resources>

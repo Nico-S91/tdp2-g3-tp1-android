@@ -56,10 +56,10 @@ public class Comercio implements Serializable {
         Comercio comercio = null;
         try {
             comercio = new Comercio();
-            comercio.setNombre(json.getString("Nombre"));
-            comercio.setDireccion(json.getString("Direccion"));
+            comercio.setNombre(json.getString("name"));
+            comercio.setDireccion(json.getString("address"));
             comercio.setId(json.getInt("id"));
-            comercio.setImagen(json.getString("Imagen"));
+//            comercio.setImagen(json.getString("Imagen"));
         } catch (JSONException e) {
             throw new BusinessException("Error al traer el comercio", e);
         }
