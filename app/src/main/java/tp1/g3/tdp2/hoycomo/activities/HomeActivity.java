@@ -36,6 +36,7 @@ import com.loopj.android.http.*;
 import org.json.*;
 
 import cz.msebera.android.httpclient.Header;
+import tp1.g3.tdp2.hoycomo.Activdades.ComerciosListado;
 import tp1.g3.tdp2.hoycomo.R;
 import tp1.g3.tdp2.hoycomo.helpers.AppServerClient;
 
@@ -123,10 +124,9 @@ public class HomeActivity extends AppCompatActivity
                 //Voy a ver si el usuario es nuevo o ya existe
                 try {
                     //creo el parametro de consulta
-                    RequestParams params = new RequestParams();
-                    params.put("fb_id", object.getString("id"));
+                    String fbId = object.getString("id");
 
-                    AppServerClient.get("user/exist", params, new JsonHttpResponseHandler() {
+                    AppServerClient.get("api/v1/user/" + fbId, null, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                             //capturo la respuesta Json recibida
@@ -134,6 +134,11 @@ public class HomeActivity extends AppCompatActivity
                                 //El usuario no existe, debo mandarlo hacia la pantalla de Registro de usuarios.
                                 startActivity(new Intent(HomeActivity.this, UserRegisterAddressActivity.class));
                             }
+
+                            if(statusCode == 200) {
+                                startActivity(new Intent(HomeActivity.this, ComerciosListado.class));
+                            }
+
                         }
 
                         @Override
@@ -165,7 +170,6 @@ public class HomeActivity extends AppCompatActivity
         request.setParameters(parameters);
         request.executeAsync();
 
-        //TODO: Testear en un celular real!
     }
 
     @Override

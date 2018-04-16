@@ -8,7 +8,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 //clase estatica para el clioente rest que se va a comunicar con el server
 public class AppServerClient {
-    private static final String BASE_URL = "https://demo4909478.mockable.io/";
+    private static final String BASE_URL = "https://thawing-cliffs-51834.herokuapp.com/";
 
     private static AsyncHttpClient client = new AsyncHttpClient();
 
